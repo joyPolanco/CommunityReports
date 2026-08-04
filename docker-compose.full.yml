@@ -1,0 +1,44 @@
+# Levanta Postgres + la Api dockerizada. Uso: docker compose -f docker-compose.full.yml up --build
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: community_reports_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: community_reports
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - community_reports_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: community_reports_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=community_reports;Username=postgres;Password=postgres"
+      Jwt__Key: "CAMBIA_ESTA_LLAVE_POR_UNA_SECRETA_DE_AL_MENOS_32_CARACTERES"
+      Jwt__Issuer: "CommunityReports.Api"
+      Jwt__Audience: "CommunityReports.Client"
+      Seed__AdminUsername: "admin"
+      Seed__AdminEmail: "admin@communityreports.local"
+      Seed__AdminPassword: "CAMBIA_ESTA_PASSWORD_ANTES_DE_PRODUCCION1"
+
+volumes:
+  community_reports_pgdata:

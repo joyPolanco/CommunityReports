@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="CommunityReports.Api/CommunityReports.Api.csproj" />
+  <Project Path="CommunityReports.Application/CommunityReports.Application.csproj" />
+  <Project Path="CommunityReports.Domain/CommunityReports.Domain.csproj" />
+  <Project Path="CommunityReports.Infrastructure/CommunityReports.Infrastructure.csproj" />
+</Solution>

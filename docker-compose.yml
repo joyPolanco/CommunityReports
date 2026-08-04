@@ -1,0 +1,23 @@
+# Levanta SOLO PostgreSQL. La Api se corre local con `dotnet run` (ver README-BACKEND.md).
+# Uso: docker compose up -d
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: community_reports_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: community_reports
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - community_reports_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  community_reports_pgdata:
